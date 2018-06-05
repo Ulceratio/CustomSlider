@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="CustomSlider.SimpleSlider"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CustomSlider"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" 
+             PreviewMouseMove="UserControl_PreviewMouseMove">
+    <UserControl.Resources>
+        <local:HalfConverter x:Key="halfConverter1" x:Name="Converter1" Multiplier="50"/>
+        <local:HalfConverter x:Key="halfConverter2" x:Name="Converter2" Multiplier="100"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.2*"></RowDefinition>
+            <RowDefinition Name="MainPartOfSlider" Height="0.6*"></RowDefinition>
+            <RowDefinition Height="0.2*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Name="GridForSlider" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Name="LeftPartOfSlider" Width="0.475*"></ColumnDefinition>
+                <ColumnDefinition Name="RegulatorBlock" Width="0.05*"></ColumnDefinition>
+                <ColumnDefinition Name="RightPartOfSlider" Width="0.475*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Rectangle Name="LeftRectangle" Width="{Binding ElementName=LeftPartOfSlider,Path=Width}" Grid.Column="0" Height="{Binding ElementName=MainPartOfSlider,Path=Height,Converter={StaticResource halfConverter1}}" Fill="Red"></Rectangle>
+            <Rectangle Name="RightRectangle" Width="{Binding ElementName=RightPartOfSlider,Path=Width}" Grid.Column="2" Height="{Binding ElementName=MainPartOfSlider,Path=Height,Converter={StaticResource halfConverter1}}" Fill="Orange"></Rectangle>
+            <Button Name="Regulator" Grid.Column="1"
+                    Height="{Binding ElementName=MainPartOfSlider,Path=Height,Converter={StaticResource halfConverter2}}" 
+                    Width="{Binding ElementName=RegulatorBlock,Path=Width}" 
+                    BorderThickness="0" 
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"                  
+                    PreviewMouseLeftButtonDown="Regulator_PreviewMouseLeftButtonDown"
+                    PreviewMouseLeftButtonUp="Regulator_PreviewMouseLeftButtonUp" >
+                <Button.Content>
+                    <Rectangle Height="100"  Width="100">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="White" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Button.Content>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>
