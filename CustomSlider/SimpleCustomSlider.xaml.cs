@@ -48,6 +48,7 @@ namespace CustomSlider
                 }
                 LeftPartOfSlider.Width = new GridLength(_Value * (LeftPartOfSlider.Width.Value + RightPartOfSlider.Width.Value), GridUnitType.Star);
                 RightPartOfSlider.Width = new GridLength((LeftPartOfSlider.Width.Value + RightPartOfSlider.Width.Value) - (_Value * (LeftPartOfSlider.Width.Value + RightPartOfSlider.Width.Value)), GridUnitType.Star);
+                ValueChanged?.Invoke();
             }
         }
 
@@ -57,6 +58,8 @@ namespace CustomSlider
         private Point CurrentMousePosition { get; set; }
 
         public event Action<string> Print;
+
+        public event Action ValueChanged;
 
         private double MainWidth
         {
