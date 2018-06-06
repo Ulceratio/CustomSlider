@@ -23,23 +23,42 @@
                 <ColumnDefinition Name="RegulatorBlock" Width="0.05*"></ColumnDefinition>
                 <ColumnDefinition Name="RightPartOfSlider" Width="0.475*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Rectangle Name="LeftRectangle" Width="{Binding ElementName=LeftPartOfSlider,Path=Width}" Grid.Column="0" Height="{Binding ElementName=MainPartOfSlider,Path=Height,Converter={StaticResource halfConverter1}}" Fill="Red"></Rectangle>
-            <Rectangle Name="RightRectangle" Width="{Binding ElementName=RightPartOfSlider,Path=Width}" Grid.Column="2" Height="{Binding ElementName=MainPartOfSlider,Path=Height,Converter={StaticResource halfConverter1}}" Fill="Orange"></Rectangle>
-            <Button Name="Regulator" Grid.Column="1"
-                    Height="{Binding ElementName=MainPartOfSlider,Path=Height,Converter={StaticResource halfConverter2}}" 
+            <Rectangle Name="LeftRectangle" Width="{Binding ElementName=LeftPartOfSlider,Path=Width}" Grid.Column="0">
+                <Rectangle.Fill>
+                    <SolidColorBrush x:Name="BrushForLeftRectangle" Color="Orange"></SolidColorBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+
+            <Rectangle Name="RightRectangle" Width="{Binding ElementName=RightPartOfSlider,Path=Width}" Grid.Column="2">
+                <Rectangle.Fill>
+                    <SolidColorBrush x:Name="BrushForRightRectangle" Color="White"></SolidColorBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+
+            <Button Name="Regulator" Grid.Column="1"                    
                     Width="{Binding ElementName=RegulatorBlock,Path=Width}" 
                     BorderThickness="0" 
+                    BorderBrush="Black"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"                  
                     PreviewMouseLeftButtonDown="Regulator_PreviewMouseLeftButtonDown"
                     PreviewMouseLeftButtonUp="Regulator_PreviewMouseLeftButtonUp" >
-                <Button.Content>
-                    <Rectangle Height="100"  Width="100">
-                        <Rectangle.Fill>
-                            <SolidColorBrush Color="White" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Button.Content>
+
+                <Button.Background>
+                    <SolidColorBrush Color="White" />
+                </Button.Background>
+
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+
             </Button>
         </Grid>
     </Grid>

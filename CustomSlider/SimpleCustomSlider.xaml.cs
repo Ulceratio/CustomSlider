@@ -15,36 +15,17 @@ using System.Windows.Shapes;
 
 namespace CustomSlider
 {
-    /// <summary>
-    /// Логика взаимодействия для UserControl1.xaml
-    /// </summary>
     public partial class SimpleSlider : UserControl
     {
         #region Fields
         public double HeightForRectangles
         {
-            get
-            {
-                return (Resources["halfConverter1"] as HalfConverter).Multiplier;
-            }
-            set
-            {
-                var ConverterForRectangles = (Resources["halfConverter1"] as HalfConverter);
-                ConverterForRectangles.Multiplier = value;                
-            }
+            get; set;
         }
 
         public double HeightForRegulator
         {
-            get
-            {
-                return (Resources["halfConverter2"] as HalfConverter).Multiplier;
-            }
-            set
-            {
-                var ConverterForRectangles = (Resources["halfConverter2"] as HalfConverter);
-                ConverterForRectangles.Multiplier = value;
-            }
+            get; set;
         }
 
         private double _Value { get; set; }
@@ -57,6 +38,16 @@ namespace CustomSlider
             set
             {
                 _Value = value;
+                if (_Value > 1)
+                {
+                    _Value = 1;
+                }
+                if (_Value < 0)
+                {
+                    _Value = 0;
+                }
+                LeftPartOfSlider.Width = new GridLength(_Value * (LeftPartOfSlider.Width.Value + RightPartOfSlider.Width.Value), GridUnitType.Star);
+                RightPartOfSlider.Width = new GridLength((LeftPartOfSlider.Width.Value + RightPartOfSlider.Width.Value) - (_Value * (LeftPartOfSlider.Width.Value + RightPartOfSlider.Width.Value)), GridUnitType.Star);
             }
         }
 
@@ -65,7 +56,7 @@ namespace CustomSlider
         private Point PreviousMousePosition { get; set; }
         private Point CurrentMousePosition { get; set; }
 
-        //public event Action<string> Print;
+        public event Action<string> Print;
 
         private double MainWidth
         {
@@ -74,7 +65,43 @@ namespace CustomSlider
                 return GridForSlider.ColumnDefinitions[0].ActualWidth + GridForSlider.ColumnDefinitions[1].ActualWidth + GridForSlider.ColumnDefinitions[2].ActualWidth;
             }
         }
+        #region Colors
+        public Color LeftRectangleColor
+        {
+            get
+            {
+                return BrushForLeftRectangle.Color;
+            }
+            set
+            {
+                BrushForLeftRectangle.Color = value;
+            }
+        }
 
+        public Color RightRectangleColor
+        {
+            get
+            {
+                return ((SolidColorBrush)RightRectangle.Fill).Color;
+            }
+            set
+            {
+                ((SolidColorBrush)RightRectangle.Fill).Color = value;
+            }
+        }
+
+        public Color RegulatorColor
+        {
+            get
+            {
+                return ((SolidColorBrush)Regulator.Background).Color;
+            }
+            set
+            {
+                ((SolidColorBrush)Regulator.Background).Color = value;
+            }
+        }
+        #endregion
 
         #endregion
 
@@ -83,14 +110,32 @@ namespace CustomSlider
         {
             InitializeComponent();
 
-            var converter1 = Resources["halfConverter1"] as HalfConverter;
+            Init();
 
-            _IsMouseDown = false;
-           
         }
         #endregion
 
         #region Functions
+
+        public void Init()
+        {
+            this.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+            this.Arrange(new Rect(0, 0, this.DesiredSize.Width, this.DesiredSize.Height));
+
+            HeightForRectangles = 10;
+
+            HeightForRegulator = 30;
+
+            LeftRectangle.Height = MainPartOfSlider.ActualHeight * HeightForRectangles;
+
+            RightRectangle.Height = MainPartOfSlider.ActualHeight * HeightForRectangles;
+
+            Regulator.Height = MainPartOfSlider.ActualHeight * HeightForRegulator;
+
+            _IsMouseDown = false;
+        }
+
         #endregion
 
         #region Events
@@ -124,6 +169,10 @@ namespace CustomSlider
                 var ForRightPart = RightPartOfSlider.Width.Value + percent * -1;
 
                 var ForCenter = 1 - (LeftPartOfSlider.Width.Value + RightPartOfSlider.Width.Value);
+
+                Value = ForLeftPart * (1 / (ForLeftPart + ForRightPart));
+
+                Print?.Invoke(Value.ToString());
 
                 if (ForLeftPart <= 0)
                 {
