@@ -18,14 +18,32 @@ namespace CustomSlider
     public partial class SimpleSlider : UserControl
     {
         #region Fields
+        private double _HeightForRectangles { get; set; }
         public double HeightForRectangles
         {
-            get; set;
+            get
+            {
+                return _HeightForRectangles;
+            }
+            set
+            {
+                _HeightForRectangles = value;
+                InitHeights();
+            }
         }
 
+        private double _HeightForRegulator { get; set; }
         public double HeightForRegulator
         {
-            get; set;
+            get
+            {
+                return _HeightForRegulator;
+            }
+            set
+            {
+                _HeightForRegulator = value;
+                InitHeights();
+            }
         }
 
         private double _Value { get; set; }
@@ -120,7 +138,7 @@ namespace CustomSlider
 
         #region Functions
 
-        public void Init()
+        private void Init()
         {
             this.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
@@ -130,13 +148,18 @@ namespace CustomSlider
 
             HeightForRegulator = 30;
 
+            InitHeights();
+
+            _IsMouseDown = false;
+        }
+
+        private void InitHeights()
+        {
             LeftRectangle.Height = MainPartOfSlider.ActualHeight * HeightForRectangles;
 
             RightRectangle.Height = MainPartOfSlider.ActualHeight * HeightForRectangles;
 
             Regulator.Height = MainPartOfSlider.ActualHeight * HeightForRegulator;
-
-            _IsMouseDown = false;
         }
 
         #endregion
